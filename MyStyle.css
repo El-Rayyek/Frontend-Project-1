@@ -1,0 +1,21 @@
+
+
+.MyHeader{background-color: #ff0000;
+    display: inline;
+}
+#myid{background-color: blueviolet;
+    display: inline;
+        
+}
+.MyTable{background-color: brown;}
+#mylink{background-color:#FF2F9D;}
+.mylist{
+    background-color: aqua;
+    border-left: 8px solid red;
+    border-radius :5px;
+    margin: 23px;
+    padding: 3px;
+    width: 50%;
+    font-family: 'Rubik', sans-serif;
+}
+.myImage{width: 20%;}
