@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<!-- saved from url=(0094)https://www.codingforentrepreneurs.com/blog/python-jwt-client-django-rest-framework-simplejwt/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <!--<base target="_self" href="/">--><base href="." target="_self">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Learn to code better by building real projects.">
+    <meta name="author" content="Justin Mitchel">
+    <meta name="google-signin-client_id" content="437210896519-64mdshg04tma84ugbpcm1gki789n6du3.apps.googleusercontent.com">
+
+
+
+    <title>
+          A Python JWT Client for Django Rest Framework simplejwt - Blog Post - codingforentrepreneurs.com
+      </title>
+
+      
+
+<link rel="apple-touch-icon" sizes="57x57" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/android-icon-512x512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://static.codingforentrepreneurs.com/static/beta/icons/web/favicon-16x16.png">
+<link rel="manifest" href="https://www.codingforentrepreneurs.com/manifest.json">
+<meta name="msapplication-TileColor" content="#007cae">
+<meta name="msapplication-TileImage" content="https://static.codingforentrepreneurs.com/static/beta/icons/web/ms-icon-144x144.png">
+<meta name="theme-color" content="#007cae">
+
+
+
+      <link rel="canonical" href="https://www.codingforentrepreneurs.com/blog/python-jwt-client-django-rest-framework-simplejwt/">
+
+    
+<meta property="fb:app_id" content="332106933603142">
+<meta property="og:site_name" content="Coding for Entrepreneurs">
+<meta property="og:url" content="https://www.codingforentrepreneurs.com/blog/python-jwt-client-django-rest-framework-simplejwt/">
+<meta property="og:type" content="product">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta property="og:image" content="https://static.codingforentrepreneurs.com/media/cfe-blog/python-jwt-client-django-rest-framework-simplejwt/Django_Rest_Framework_JWT_Blog_Post.jpg">
+
+<meta property="og:title" content="A Python JWT Client for Django Rest Framework simplejwt - Blog - Coding for Entrepreneurs ">
+<meta property="og:description" content="In this blog post, we&#39;ll look at an example Python client for authentication vi…">
+
+
+    
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:src" content="cfe-blog/python-jwt-client-django-rest-framework-simplejwt/Django_Rest_Framework_JWT_Blog_Post.jpg">
+<meta name="twitter:site" content="@joincfe">
+<meta name="twitter:url" content="https://www.codingforentrepreneurs.com/blog/python-jwt-client-django-rest-framework-simplejwt/">
+<meta name="twitter:description" content="In this blog post, we&#39;ll look at an example Python client for authentication vi…">
+<meta name="twitter:title" content="A Python JWT Client for Django Rest Framework simplejwt - Blog - Coding for Entrepreneurs">
+
+
+
+    <!-- Bootstrap core CSS -->
+<link href="./demo_files/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./demo_files/cfe.min.css">
+<link rel="stylesheet" href="./demo_files/prism.min.css">
+<link rel="stylesheet" href="./demo_files/all.min.css">
+
+
+<meta name="theme-color" content="#007cae">
+
+
+   <style>
+
+.max-300 {
+  height: 300px;
+  overflow-y: scroll;
+}
+.max-200 {
+  height: 200px;
+  overflow-y: scroll;
+}
+.max-150 {
+  height: 150px;
+  overflow-y: scroll;
+}
+.spinner {
+  width: 70px;
+  text-align: center;
+}
+
+.spinner > div {
+  width: 10px;
+  height: 10px;
+  background-color: #333;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
+
+
+  .htmx-indicator {
+      display: none;
+  }
+  .htmx-request .htmx-indicator {
+      display: inline;
+  }
+  .htmx-inverted-indicator {
+      display: inline;
+  }
+  .htmx-request .htmx-inverted-indicator {
+      display: none;
+  }
+  .htmx-request .htmx-indicator-inverted, .htmx-request .htmx-indicator-inverse {
+      display: none;
+  }
+
+  .border-transparent {
+    border: 1px solid rgba(255, 255, 255, 0) !important;
+}
+
+.btn-check:checked + .btn-enroll-plan {
+  background: #007cae;
+    color: #fff!important;
+}
+
+.btn-check:checked + .btn-warning {
+  background: #007cae;
+  border-color: #007cae;
+  color: #fff!important;
+}
+
+.btn-check:checked + .btn-warning:focus, .btn-check:checked + .btn-warning:active{
+  box-shadow: 0 0 0 0.25rem rgba(0, 124, 173, 0.5);
+}
+
+/* .btn-checked:checked - .btn-lifetime  {
+
+} */
+
+.btn-enroll-plan {
+    background: #ccc;
+    color: #000!important;
+}
+.btn-enroll-plan:hover, .btn-enroll-plan:active, .btn-enroll-plan:focus {
+    background: #007cae;
+    color: #fff!important;
+}
+
+
+
+.breadcrumb-no-slash::before {
+    color: rgba(255, 255, 255, 0) !important;
+
+}
+
+
+.text-no-decoration {
+  text-decoration: none !important;
+}
+.min-content-h{min-height:80vh}
+   </style>
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+<script src="./demo_files/cb=gapi.loaded_2" async=""></script><script src="./demo_files/cb=gapi.loaded_1" async=""></script><script src="./demo_files/cb=gapi.loaded_0" async=""></script><script async="" src="./demo_files/js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0VWT40S9FB');
+</script>
+
+  <style>                      .htmx-indicator{opacity:0;transition: opacity 200ms ease-in;}                      .htmx-request .htmx-indicator{opacity:1}                      .htmx-request.htmx-indicator{opacity:1}                    </style><style>.gc-bubbleDefault{background-color:transparent!important;text-align:left;padding:0!important;margin:0!important;border:0!important;table-layout:auto!important}.gc-reset{background-color:transparent!important;border:0!important;padding:0!important;margin:0!important;text-align:left}.pls-bubbleTop{border-bottom:1px solid #ccc!important}.pls-contentLeft,.pls-topTail,.pls-vertShimLeft{background-image:url(//ssl.gstatic.com/s2/oz/images/stars/po/bubblev1/border_3.gif)!important}.pls-topTail{background-repeat:repeat-x!important;background-position:bottom!important}.pls-vertShim{background-color:#fff!important;text-align:right}.tbl-grey .pls-vertShim{background-color:#f5f5f5!important}.pls-vertShimLeft{background-repeat:repeat-y!important;background-position:100%!important;height:4px}.pls-vertShimRight{height:4px}.pls-confirm-container .pls-vertShim{background-color:#fff3c2!important}.pls-contentWrap{background-color:#fff!important;position:relative!important;vertical-align:top}.pls-contentLeft{background-repeat:repeat-y;background-position:100%;vertical-align:top}.pls-dropRight{background-image:url(//ssl.gstatic.com/s2/oz/images/stars/po/bubblev1/bubbleDropR_3.png)!important;background-repeat:repeat-y!important;vertical-align:top}.pls-dropBL,.pls-dropTR .pls-dropBR,.pls-tailleft,.pls-vert,.pls-vert img{vertical-align:top}.pls-dropBottom{background-image:url(//ssl.gstatic.com/s2/oz/images/stars/po/bubblev1/bubbleDropB_3.png)!important;background-repeat:repeat-x!important;width:100%;vertical-align:top}.pls-topLeft{background:inherit!important;text-align:right;vertical-align:bottom}.pls-topRight{background:inherit!important;text-align:left;vertical-align:bottom}.pls-bottomLeft{background:inherit!important;text-align:right}.pls-bottomRight{background:inherit!important;text-align:left;vertical-align:top}.pls-tailbottom,.pls-tailleft,.pls-tailright,.pls-tailtop{display:none;position:relative}.pls-dropBL,.pls-dropBR,.pls-dropTR,.pls-tailbottom,.pls-tailleft,.pls-tailright,.pls-tailtop{background-image:url(//ssl.gstatic.com/s2/oz/images/stars/po/bubblev1/bubbleSprite_3.png)!important;background-repeat:no-repeat}.tbl-grey .pls-dropBL,.tbl-grey .pls-dropBR,.tbl-grey .pls-dropTR,.tbl-grey .pls-tailbottom,.tbl-grey .pls-tailleft,.tbl-grey .pls-tailright,.tbl-grey .pls-tailtop{background-image:url(//ssl.gstatic.com/s2/oz/images/stars/po/bubblev1/bubbleSprite-grey.png)!important}.pls-tailbottom{background-position:-23px 0}.pls-confirm-container .pls-tailbottom{background-position:-23px -10px}.pls-tailtop{background-position:-19px -20px}.pls-tailright{background-position:0 0}.pls-tailleft{background-position:-10px 0}.pls-tailtop{vertical-align:top}.gc-bubbleDefault td{line-height:0;font-size:0}.pls-tailbottom,.pls-topLeft img,.pls-topRight img{vertical-align:bottom}.bubbleDropTR,.pls-bottomLeft,.pls-bottomLeft img,.pls-dropBottom img,.pls-dropBottomL img,.pls-dropBottomR img{vertical-align:top}.pls-dropTR{background-position:0 -22px}.pls-dropBR{background-position:0 -27px}.pls-dropBL{background-position:0 -16px}.pls-spacerbottom,.pls-spacerleft,.pls-spacerright,.pls-spacertop{position:static!important}.pls-spinner{bottom:0;position:absolute;left:0;margin:auto;right:0;top:0}</style></head>
+  <body hx-headers="{&quot;X-CSRFToken&quot;: &quot;eTmW0n4A0JB5zRsnDHXV1OgbFxxyTOF2d9HTe77riWa7bZQ6Eb0NQuXbBcQiOU7b&quot;}">
+    <div class="container-fluid">
+      <div class="row">
+<div class="col-lg-8 mx-auto py-md-3">
+  
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-transparent bg-cfe">
+  <div class="container-fluid px-0">
+    <a href="https://www.codingforentrepreneurs.com/" class="navbar-brand ">
+      <img src="./demo_files/cfe-logo.svg" height="30">
+    </a>
+    <button class="navbar-toggler mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse d-lg-flex" id="navbarNavDropdown">
+      <form class="flex-lg-grow-1" action="https://www.codingforentrepreneurs.com/search/">
+        <input class="form-control  me-2 " type="search" name="query" value="" placeholder="Search everything" aria-label="Search">
+      </form>
+
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link w-100 " href="https://www.codingforentrepreneurs.com/cart/"> Cart
+              <span class="badge bg-secondary" hx-get="/cart/status" hx-trigger="every 30s, cart-updated from:body"></span></a>
+        </li>
+
+        
+        <li class="nav-item">
+          <a class="nav-link " href="https://www.codingforentrepreneurs.com/courses/">Courses</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="https://www.codingforentrepreneurs.com/blog/">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="https://www.codingforentrepreneurs.com/help/">Help</a>
+        </li>
+
+
+
+        
+        <li class="nav-item">
+          <a class="nav-link " href="https://www.codingforentrepreneurs.com/login/">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link  " href="https://www.codingforentrepreneurs.com/signup/">Join</a>
+        </li>
+        
+
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+  
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="https://www.codingforentrepreneurs.com/blog/">Blog</a></li>
+        <li class="breadcrumb-item active" aria-current="page">A Python JWT Client for Django Rest Framework simplejwt</li>
+    </ol>
+</nav>
+
+
+
+  <main class="main-content min-content-h">
+    
+
+
+<div class="mb-5">
+    <div class="row  mb-5">
+      <div class="col-md-7 col-lg-8 col-12">
+            <img class="img-fluid mb-5" src="./demo_files/Django_Rest_Framework_JWT_Blog_Post.jpg">
+            <h1>A Python JWT Client for Django Rest Framework simplejwt</h1>
+            <p><small>Feb. 21, 2022</small></p>
+            <p>
+<a class="btn btn-sm btn-outline-secondary  mb-2" href="https://www.codingforentrepreneurs.com/topics/api-client">API Client</a>
+
+<a class="btn btn-sm btn-outline-secondary  mb-2" href="https://www.codingforentrepreneurs.com/topics/django-rest-framework">Django Rest Framework</a>
+
+<a class="btn btn-sm btn-outline-secondary  mb-2" href="https://www.codingforentrepreneurs.com/topics/drf">DRF</a>
+
+<a class="btn btn-sm btn-outline-secondary  mb-2" href="https://www.codingforentrepreneurs.com/topics/jwt">JWT</a>
+
+<a class="btn btn-sm btn-outline-secondary  mb-2" href="https://www.codingforentrepreneurs.com/topics/python">Python</a>
+
+</p>
+            <div class="cfe-markdown-render"><p>In this blog post, we'll look at an example Python client for authentication via JSON Web Tokens (JWT). The code below is meant to be used as a snippet you can modify as you need. If you have questions or comments, please write them below.</p>
+<p>If you want full context on how to use this code, consider watching our <a href="https://www.codingforentrepreneurs.com/projects/django-rest-framework-2022/">Django Rest Framework tutorial series</a>.</p>
+<p>This snippet was made for using the <code>django-rest-framework-simplejwt</code> Authentication backend that we implement at the end of the above tutorial series. If you want to learn more about that package, consider reading their <a href="https://django-rest-framework-simplejwt.readthedocs.io/">docs</a>.</p>
+<p>A few key assumptions:</p>
+<ul>
+<li>You have Django Rest Framework setup on a Django Project (or you can <a href="https://github.com/codingforentrepreneurs/Django-Rest-Framework-Tutorial">clone this one</a>)</li>
+<li>You know how to use basic <a href="https://www.codingforentrepreneurs.com/projects/django-rest-framework-2022/token-authentication">Token Authentication</a> with Django Rest Framework and the <a href="https://docs.python-requests.org/en/latest/">Python Requests</a> package.</li>
+<li>Storing something like <code>creds.json</code> (as we do below) 100% has <strong>security holes</strong> and should be used only as you learn.</li>
+</ul>
+<p>The endpoints I will be using are as follows:</p>
+<ul>
+<li><code>https://localhost:8000/api/token/</code> mapped to the <code>TokenObtainPairView</code></li>
+<li><code>https://localhost:8000/api/token/refresh/</code> mapped to the <code>TokenRefreshView</code></li>
+<li><code>https://localhost:8000/api/token/verify/</code> mapped to the <code>TokenVerifyView</code></li>
+<li><code>https://localhost:8000/api/products/</code> mapped to my Django Rest Framework generic ListAPIView that with the pagination class LimitPageOffsetPagination.</li>
+</ul>
+<p>Below is what the respective <code>urls.py</code> looks like:</p>
+<button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><pre class="language-python" tabindex="0"><code class="python language-python"><span class="token keyword">from</span> rest_framework_simplejwt<span class="token punctuation">.</span>views <span class="token keyword">import</span> <span class="token punctuation">(</span>
+    TokenObtainPairView<span class="token punctuation">,</span>
+    TokenRefreshView<span class="token punctuation">,</span>
+    TokenVerifyView<span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">from</span> products<span class="token punctuation">.</span>views <span class="token keyword">import</span> product_list_create_view
+
+urlpatterns <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    path<span class="token punctuation">(</span><span class="token string">'api/token/'</span><span class="token punctuation">,</span> TokenObtainPairView<span class="token punctuation">.</span>as_view<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'token_obtain_pair'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    path<span class="token punctuation">(</span><span class="token string">'api/token/refresh/'</span><span class="token punctuation">,</span> TokenRefreshView<span class="token punctuation">.</span>as_view<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'token_refresh'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    path<span class="token punctuation">(</span><span class="token string">'api/token/verify/'</span><span class="token punctuation">,</span> TokenVerifyView<span class="token punctuation">.</span>as_view<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'token_verify'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    path<span class="token punctuation">(</span><span class="token string">'api/products/'</span><span class="token punctuation">,</span> product_list_create_view<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'product-list'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+</code></pre>
+<p>&gt; For simplicity of this post, this <code>urls.py</code> <em>does not exactly match</em> how the urls are written in the <a href="https://www.codingforentrepreneurs.com/projects/django-rest-framework-2022/">Django Rest Framework</a> tutorial or <a href="https://github.com/codingforentrepreneurs/Django-Rest-Framework-Tutorial">github repo</a>. This post does, however, match how they are <em>configured</em> (ie the same url paths point to the same views).</p>
+<p>Here's the client:</p>
+<button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><button class="btn btn-outline-primary btn-sm rounded-0 copy-btn">Copy</button><pre class="language-python" tabindex="0"><code class="python language-python"><span class="token keyword">from</span> dataclasses <span class="token keyword">import</span> dataclass
+<span class="token keyword">import</span> requests
+<span class="token keyword">from</span> getpass <span class="token keyword">import</span> getpass
+<span class="token keyword">import</span> pathlib 
+<span class="token keyword">import</span> json
+
+
+<span class="token decorator annotation punctuation">@dataclass</span>
+<span class="token keyword">class</span> <span class="token class-name">JWTClient</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Use a dataclass decorator
+    to simply the class construction
+    """</span>
+    access<span class="token punctuation">:</span><span class="token builtin">str</span> <span class="token operator">=</span> <span class="token boolean">None</span>
+    refresh<span class="token punctuation">:</span><span class="token builtin">str</span> <span class="token operator">=</span> <span class="token boolean">None</span>
+    <span class="token comment"># ensure this matches your simplejwt config</span>
+    header_type<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> <span class="token string">"Bearer"</span>
+    <span class="token comment"># this assumesy ou have DRF running on localhost:8000</span>
+    base_endpoint <span class="token operator">=</span> <span class="token string">"http://localhost:8000/api"</span>
+    <span class="token comment"># this file path is insecure</span>
+    cred_path<span class="token punctuation">:</span> pathlib<span class="token punctuation">.</span>Path <span class="token operator">=</span> pathlib<span class="token punctuation">.</span>Path<span class="token punctuation">(</span><span class="token string">"creds.json"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">__post_init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>cred_path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> 
+            <span class="token triple-quoted-string string">"""
+            You have stored creds,
+            let's verify them
+            and refresh them.
+            If that fails,
+            restart login process.
+            """</span>
+            <span class="token keyword">try</span><span class="token punctuation">:</span>
+                data <span class="token operator">=</span> json<span class="token punctuation">.</span>loads<span class="token punctuation">(</span>self<span class="token punctuation">.</span>cred_path<span class="token punctuation">.</span>read_text<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token keyword">except</span> Exception<span class="token punctuation">:</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Assuming creds has been tampered with"</span><span class="token punctuation">)</span>
+                data <span class="token operator">=</span> <span class="token boolean">None</span>
+            <span class="token keyword">if</span> data <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+                <span class="token triple-quoted-string string">""" 
+                Clear stored creds and
+                Run login process
+                """</span>
+                self<span class="token punctuation">.</span>clear_tokens<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                self<span class="token punctuation">.</span>perform_auth<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                <span class="token triple-quoted-string string">"""
+                `creds.json` was not tampered with
+                Verify token -&amp;gt; 
+                if necessary, Refresh token -&amp;gt;
+                if necessary, Run login process
+                """</span>
+                self<span class="token punctuation">.</span>access <span class="token operator">=</span> data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'access'</span><span class="token punctuation">)</span>
+                self<span class="token punctuation">.</span>refresh <span class="token operator">=</span> data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'refresh'</span><span class="token punctuation">)</span>
+                token_verified <span class="token operator">=</span> self<span class="token punctuation">.</span>verify_token<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token keyword">if</span> <span class="token keyword">not</span> token_verified<span class="token punctuation">:</span>
+                    <span class="token triple-quoted-string string">"""
+                    This can mean the token has expired
+                    or is invalid. Either way, attempt
+                    a refresh.
+                    """</span>
+                    refreshed <span class="token operator">=</span> self<span class="token punctuation">.</span>perform_refresh<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token keyword">if</span> <span class="token keyword">not</span> refreshed<span class="token punctuation">:</span>
+                        <span class="token triple-quoted-string string">"""
+                        This means the token refresh
+                        also failed. Run login process
+                        """</span>
+                        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"invalid data, login again."</span><span class="token punctuation">)</span>
+                        self<span class="token punctuation">.</span>clear_tokens<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        self<span class="token punctuation">.</span>perform_auth<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token triple-quoted-string string">"""
+            Run login process
+            """</span>
+            self<span class="token punctuation">.</span>perform_auth<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_headers</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> header_type<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Default headers for HTTP requests
+        including the JWT token
+        """</span>
+        _type <span class="token operator">=</span> header_type <span class="token keyword">or</span> self<span class="token punctuation">.</span>header_type
+        token <span class="token operator">=</span> self<span class="token punctuation">.</span>access
+        <span class="token keyword">if</span> <span class="token keyword">not</span> token<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+                <span class="token string">"Authorization"</span><span class="token punctuation">:</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>_type<span class="token punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">{</span>token<span class="token punctuation">}</span></span><span class="token string">"</span></span>
+        <span class="token punctuation">}</span>
+
+    <span class="token keyword">def</span> <span class="token function">perform_auth</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Simple way to perform authentication
+        Without exposing password(s) during the
+        collection process.
+        """</span>
+        endpoint <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>base_endpoint<span class="token punctuation">}</span></span><span class="token string">/token/"</span></span> 
+        username <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"What is your username?\n"</span><span class="token punctuation">)</span>
+        password <span class="token operator">=</span> getpass<span class="token punctuation">(</span><span class="token string">"What is your password?\n"</span><span class="token punctuation">)</span>
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>endpoint<span class="token punctuation">,</span> json<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">'username'</span><span class="token punctuation">:</span> username<span class="token punctuation">,</span> <span class="token string">'password'</span><span class="token punctuation">:</span> password<span class="token punctuation">}</span><span class="token punctuation">)</span> 
+        <span class="token keyword">if</span> r<span class="token punctuation">.</span>status_code <span class="token operator">!=</span> <span class="token number">200</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> Exception<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Access not granted: </span><span class="token interpolation"><span class="token punctuation">{</span>r<span class="token punctuation">.</span>text<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'access granted'</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>write_creds<span class="token punctuation">(</span>r<span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">write_creds</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">:</span><span class="token builtin">dict</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Store credentials as a local file
+        and update instance with correct
+        data.
+        """</span>
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>cred_path <span class="token keyword">is</span> <span class="token keyword">not</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>access <span class="token operator">=</span> data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'access'</span><span class="token punctuation">)</span>
+            self<span class="token punctuation">.</span>refresh <span class="token operator">=</span> data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'refresh'</span><span class="token punctuation">)</span>
+            <span class="token keyword">if</span> self<span class="token punctuation">.</span>access <span class="token keyword">and</span> self<span class="token punctuation">.</span>refresh<span class="token punctuation">:</span>
+                self<span class="token punctuation">.</span>cred_path<span class="token punctuation">.</span>write_text<span class="token punctuation">(</span>json<span class="token punctuation">.</span>dumps<span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">verify_token</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Simple method for verifying your
+        token data. This method only verifies
+        your `access` token. A 200 HTTP status
+        means success, anything else means failure.
+        """</span>
+        data <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token string">"token"</span><span class="token punctuation">:</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>access<span class="token punctuation">}</span></span><span class="token string">"</span></span>
+        <span class="token punctuation">}</span>
+        endpoint <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>base_endpoint<span class="token punctuation">}</span></span><span class="token string">/token/verify/"</span></span> 
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>endpoint<span class="token punctuation">,</span> json<span class="token operator">=</span>data<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> r<span class="token punctuation">.</span>status_code <span class="token operator">==</span> <span class="token number">200</span>
+
+    <span class="token keyword">def</span> <span class="token function">clear_tokens</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Remove any/all JWT token data
+        from instance as well as stored
+        creds file.
+        """</span>
+        self<span class="token punctuation">.</span>access <span class="token operator">=</span> <span class="token boolean">None</span>
+        self<span class="token punctuation">.</span>refresh <span class="token operator">=</span> <span class="token boolean">None</span>
+        <span class="token keyword">if</span> self<span class="token punctuation">.</span>cred_path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>cred_path<span class="token punctuation">.</span>unlink<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">perform_refresh</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Refresh the access token by using the correct
+        auth headers and the refresh token.
+        """</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Refreshing token."</span><span class="token punctuation">)</span>
+        headers <span class="token operator">=</span> self<span class="token punctuation">.</span>get_headers<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        data <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token string">"refresh"</span><span class="token punctuation">:</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>refresh<span class="token punctuation">}</span></span><span class="token string">"</span></span>
+        <span class="token punctuation">}</span>
+        endpoint <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>base_endpoint<span class="token punctuation">}</span></span><span class="token string">/token/refresh/"</span></span> 
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>endpoint<span class="token punctuation">,</span> json<span class="token operator">=</span>data<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> r<span class="token punctuation">.</span>status_code <span class="token operator">!=</span> <span class="token number">200</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>clear_tokens<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token boolean">False</span>
+        refresh_data <span class="token operator">=</span> r<span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token string">'access'</span> <span class="token keyword">in</span> refresh_data<span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>clear_tokens<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token boolean">False</span>
+        stored_data <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token string">'access'</span><span class="token punctuation">:</span> refresh_data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'access'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token string">'refresh'</span><span class="token punctuation">:</span> self<span class="token punctuation">.</span>refresh
+        <span class="token punctuation">}</span>
+        self<span class="token punctuation">.</span>write_creds<span class="token punctuation">(</span>stored_data<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token boolean">True</span>
+
+    <span class="token keyword">def</span> <span class="token function">list</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> endpoint<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> limit<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">"""
+        Here is an actual api call to a DRF
+        View that requires our simplejwt Authentication
+        Working correctly.
+        """</span>
+        headers <span class="token operator">=</span> self<span class="token punctuation">.</span>get_headers<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> endpoint <span class="token keyword">is</span> <span class="token boolean">None</span> <span class="token keyword">or</span> self<span class="token punctuation">.</span>base_endpoint <span class="token keyword">not</span> <span class="token keyword">in</span> <span class="token builtin">str</span><span class="token punctuation">(</span>endpoint<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            endpoint <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>base_endpoint<span class="token punctuation">}</span></span><span class="token string">/products/?limit=</span><span class="token interpolation"><span class="token punctuation">{</span>limit<span class="token punctuation">}</span></span><span class="token string">"</span></span> 
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>endpoint<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span> 
+        <span class="token keyword">if</span> r<span class="token punctuation">.</span>status_code <span class="token operator">!=</span> <span class="token number">200</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> Exception<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Request not complete </span><span class="token interpolation"><span class="token punctuation">{</span>r<span class="token punctuation">.</span>text<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+        data <span class="token operator">=</span> r<span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> data
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Here's Simple example of how to use our client above.
+    """</span>
+
+    <span class="token comment"># this will either prompt a login process</span>
+    <span class="token comment"># or just run with current stored data</span>
+    client <span class="token operator">=</span> JWTClient<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+
+    <span class="token comment"># simple instance method to perform an HTTP</span>
+    <span class="token comment"># request to our /api/products/ endpoint</span>
+    lookup_1_data <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token builtin">list</span><span class="token punctuation">(</span>limit<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">)</span>
+    <span class="token comment"># We used pagination at our endpoint so we have:</span>
+    results <span class="token operator">=</span> lookup_1_data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'results'</span><span class="token punctuation">)</span>
+    next_url <span class="token operator">=</span> lookup_1_data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'next'</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"First lookup result length"</span><span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>results<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> next_url<span class="token punctuation">:</span>
+        lookup_2_data <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token builtin">list</span><span class="token punctuation">(</span>endpoint<span class="token operator">=</span>next_url<span class="token punctuation">)</span>
+        results <span class="token operator">+=</span> lookup_2_data<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'results'</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Second lookup result length"</span><span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>results<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Do you have ways to improve? Please comment below and use <a href="https://www.codingforentrepreneurs.com/blog/markdown-cheatsheet/">Markdown format</a> when pasting code.</p></div>
+
+
+            
+<div id="comments">
+    <div class="min-content-h" hx-get="/comments/?path=/blog/python-jwt-client-django-rest-framework-simplejwt/&amp;title=A Python JWT Client for Django Rest Framework simplejwt" hx-trigger="revealed" id="hx-comment-container">
+        <h3 class="text-muted">Loading...</h3>
+        <button hx-get="/comments/?path=/blog/python-jwt-client-django-rest-framework-simplejwt/&amp;title=A Python JWT Client for Django Rest Framework simplejwt" class="btn btn-outline-secondary mx-auto" hx-target="#hx-comment-container">Click to load</button>
+    </div>
+</div>
+
+
+
+        </div>
+        <div class="col-md-5 col-lg-4 col-12">
+            
+
+<div class="mb-3">
+
+      <h4 class="">Recommended Posts</h4>
+      
+
+      
+
+    <div class="cfe-recommended-block" data-row-class="mb-3" data-card-class="card border-0 mb-3" data-object-id="241" data-index="cfe_Post" data-max-items="3" data-show-archive="false" data-hide-content="true"><section class="auc-Recommend"><div class="mb-3"><div class="col"><div class="card border-0 mb-3 border-0"><a href="https://www.codingforentrepreneurs.com/blog/django-positionfield/"><img src="./demo_files/django-positionfield.png" class="img-fluid" alt="Django PositionField thumbnail"></a><div class="card-body p-0"><h5 class="card-title"><a href="https://www.codingforentrepreneurs.com/blog/django-positionfield/">Django PositionField</a></h5></div></div></div><div class="col"><div class="card border-0 mb-3 border-0"><a href="https://www.codingforentrepreneurs.com/blog/mailchimp-integration/"><img src="./demo_files/mailchimp_integration_post.jpg" class="img-fluid" alt="Mailchimp Integration thumbnail"></a><div class="card-body p-0"><h5 class="card-title"><a href="https://www.codingforentrepreneurs.com/blog/mailchimp-integration/">Mailchimp Integration</a></h5></div></div></div><div class="col"><div class="card border-0 mb-3 border-0"><a href="https://www.codingforentrepreneurs.com/blog/download-aws-s3-files-python-django-boto/"><img src="./demo_files/Download_AWS_S3_Files_using_Python.jpg" class="img-fluid" alt="Download AWS S3 Files using Python &amp; Boto thumbnail"></a><div class="card-body p-0"><h5 class="card-title"><a href="https://www.codingforentrepreneurs.com/blog/download-aws-s3-files-python-django-boto/">Download AWS S3 Files using Python &amp; Boto</a></h5></div></div></div></div></section></div>
+
+
+    
+  </div>
+
+  <hr class="my-5">
+
+
+  <div class="mb-3">
+
+    <h4 class="">Recommended Courses</h4>
+    
+    
+<div class="cfe-recommended-block" data-row-class="row row-cols-1 g-2" data-max-items="3" data-show-archive="false" data-object-id="347" data-index="cfe_Series"><section class="auc-Recommend"><div class="row row-cols-1 g-2"><div class="col"><div class="card"><a href="https://www.codingforentrepreneurs.com/courses/cc-ecommerce/"><img src="./demo_files/6224aa8b-9466-491d-ad3b-49c93806c485.jpg" class="img-fluid" alt="eCommerce thumbnail"></a><div class="card-body"><h5 class="card-title"><a href="https://www.codingforentrepreneurs.com/courses/cc-ecommerce/">eCommerce</a><span class="mx-2">·</span><small class="text-muted">Course</small></h5><div class="max-150"><div class="max-200 cfe-markdown-render"><p>This course will teach you step-by-step to build a eCommerce site from scratch. We'll be using open-source software to create each aspect of a fully functioning eCommerce business.</p></div></div></div></div></div><div class="col"><div class="card"><a href="https://www.codingforentrepreneurs.com/courses/try-django-2-2/"><img src="./demo_files/0d909f5e-61a8-489d-8e3d-f8b503d02b7a.jpg" class="img-fluid" alt="Try Django 2.2 thumbnail"></a><div class="card-body"><h5 class="card-title"><a href="https://www.codingforentrepreneurs.com/courses/try-django-2-2/">Try Django 2.2</a><span class="mx-2">·</span><small class="text-muted">Course</small></h5><div class="max-150"><div class="max-200 cfe-markdown-render"><p>Try Django 2.2 is step-by-step to build a modern, fully open-source, Blog web application using Python, Django, Bootstrap, Javascript, and more. </p>
+<p><a href="https://github.com/codingforentrepreneurs/Try-Django-2.2">Code</a></p></div></div></div></div></div><div class="col"><div class="card"><a href="https://www.codingforentrepreneurs.com/courses/srvup-2/"><img src="./demo_files/4945a5c6-c230-4be9-864e-9f1679c87d74.jpg" class="img-fluid" alt="Srvup 2 thumbnail"></a><div class="card-body"><h5 class="card-title"><a href="https://www.codingforentrepreneurs.com/courses/srvup-2/">Srvup 2</a><span class="mx-2">·</span><small class="text-muted">Course</small></h5><div class="max-150"><div class="max-200 cfe-markdown-render"><p>Learn step-by-step to create a video membership site like CodingForEntrepreneurs.com using Django 1.10 and Bootstrap. </p>
+<p>Video content is taking over all content on the web so it's time to build a system that allows you share videos with the world. Let's do this!</p></div></div></div></div></div></div></section></div>
+
+
+  </div>
+
+        </div>
+    </div>
+</div>
+
+<hr class="col-12 mb-5">
+
+
+<div class="row mb-5 ">
+    <div class="col-12">
+        <h2>Related Topics</h2>
+        <div class="">
+        
+<a class="btn btn-sm btn-outline-primary mb-2" href="https://www.codingforentrepreneurs.com/topics/api-client">API Client</a>
+
+<a class="btn btn-sm btn-outline-primary mb-2" href="https://www.codingforentrepreneurs.com/topics/django-rest-framework">Django Rest Framework</a>
+
+<a class="btn btn-sm btn-outline-primary mb-2" href="https://www.codingforentrepreneurs.com/topics/drf">DRF</a>
+
+<a class="btn btn-sm btn-outline-primary mb-2" href="https://www.codingforentrepreneurs.com/topics/jwt">JWT</a>
+
+<a class="btn btn-sm btn-outline-primary mb-2" href="https://www.codingforentrepreneurs.com/topics/python">Python</a>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<hr class="col-12 mb-5">
+
+<div class="row g-5">
+    <div class="col-md-2">
+      <a class="btn btn-outline-success w-100 p-4" style="line-height: 1; font-weight: bold;" href="https://www.codingforentrepreneurs.com/start">Start Here</a>
+    </div>
+
+    <div class="col-md-4">
+      <p class="lead mb-0"><b>Resources</b></p>
+      <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/questions/">Ask a Question</a>
+        <a class="list-group-item list-group-item-action" href="https://github.com/codingforentrepreneurs">Github</a>
+        <a class="list-group-item list-group-item-action" href="https://twitter.com/joincfe">Twitter</a>
+
+        <a class="list-group-item list-group-item-action" href="https://www.youtube.com/codingentrepreneurs?sub_confirmation=1">YouTube</a>
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/help/">Help</a>
+
+
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <p class="lead mb-0"><b>Recent <a class="text-dark text-no-decoration" href="https://www.codingforentrepreneurs.com/blog">Posts</a></b></p>
+      <div class="list-group list-group-flush">
+        
+        
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/blog/python-jwt-client-django-rest-framework-simplejwt/">A Python JWT Client for Django Rest Framework simplejwt</a>
+        
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/blog/django-github-actions/">Django &amp; Github Actions</a>
+        
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/blog/django-on-docker/">Django on Docker</a>
+        
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/blog/django-static-files-digitalocean-spaces/">Django Static Files in Production on DigitalOcean Spaces</a>
+        
+        <a class="list-group-item list-group-item-action" href="https://www.codingforentrepreneurs.com/blog/pipelines-to-encrypt-and-decrypt-pypyr/">Push Secure Directories with Encryption Pipelines</a>
+        
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  </main>
+  <footer class="pt-5 my-5 text-muted border-top d-flex">
+    <div>
+     <small>© <span id="copyright-year">2022</span> codingforentrepreneurs.com</small>
+    </div>
+    <div class="ms-auto">
+      
+     <div style="text-indent: 0px; margin: 0px; padding: 0px; background: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 179px; height: 48px;" id="___ytsubscribe_0"><iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 179px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 48px;" tabindex="0" vspace="0" width="100%" id="I0_1659377672506" name="I0_1659377672506" src="./demo_files/subscribe_embed.html" data-gapiattached="true"></iframe></div>
+     
+    </div>
+
+
+
+  </footer>
+</div>
+</div>
+</div>
+
+
+  <script src="./demo_files/htmx.min.js.download" defer=""></script>
+  <script src="./demo_files/purify.min.js.download" defer=""></script>
+  <script src="./demo_files/showdown.min.js.download" defer=""></script>
+  <script src="./demo_files/prism-cfe.min.js.download" defer=""></script>
+  <script src="./demo_files/cfe-render-markdown.js.download"></script>
+  <script src="./demo_files/bootstrap.bundle.min.js.download" defer=""></script>
+  <script src="./demo_files/platform.js.download" defer="" gapi_processed="true"></script>
+
+  
+  <script src="./demo_files/cfe-search.389cc228.js.download"></script>
+  
+  <script>
+    let copyYearEl = document.getElementById('copyright-year')
+    copyYearEl.innerText = new Date().getFullYear()
+
+
+    let cfePlaylistEl = document.getElementById('cfe-playlist')
+    if (cfePlaylistEl) {
+      let cfePlaylistElActive = cfePlaylistEl.getElementsByClassName('active')[0]
+      if (cfePlaylistElActive) {
+        cfePlaylistEl.scroll(0, cfePlaylistElActive.offsetTop - cfePlaylistEl.offsetTop);
+      }
+
+   }
+
+
+function renderMarkdownInputs () {
+  const markdownInputs = document.getElementsByClassName('markdown-input')
+for (let el of markdownInputs) {
+    el.addEventListener('keyup', (e)=>{
+        // const outputPreviewEl  = document.getElementById("markdown-input-preview")
+        const outputPreviewEl  = el.closest("div").getElementsByClassName('markdown-input-preview')[0]
+        if (outputPreviewEl) {
+            const val = e.target.value
+            if (val) {
+                outputPreviewEl.innerHTML = inputToSafeMarkdown(val)
+            } else {
+                outputPreviewEl.innerHTML = ""
+            }
+        }
+
+    })
+}
+}
+
+renderMarkdownInputs()
+
+   function cfeChatThreadScrollBottom() {
+    let chatEl = document.getElementById('chat');
+      if (chatEl) {
+          let xH = chatEl.scrollHeight;
+          chatEl.scrollTo(0, xH);
+          setTimeout(()=>{
+              xH = chatEl.scrollHeight;
+              chatEl.scrollTo(0, xH);
+          }, 200)
+
+      }
+  }
+
+  cfeChatThreadScrollBottom()
+
+
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+      cfeRenderMarkdown()
+
+    })
+
+
+    window.addEventListener('htmx:load', function(evt) {
+      cfeRenderMarkdown()
+      let renderAttempts = [.5, 1.5, 1.5, 3.5, 10, 25]
+        renderAttempts.forEach(x=>{
+          setTimeout(()=>{
+          cfeRenderMarkdown()
+          cfeChatThreadScrollBottom()
+          renderMarkdownInputs()
+        }, x * 100)
+      })
+      cfeChatThreadScrollBottom()
+    });
+
+
+    function inputToSafeMarkdown (textInput) {
+    var converter = new showdown.Converter()
+    let markdown = textInput
+    let markedContent = converter.makeHtml(markdown);
+    let sanitizedContent = DOMPurify.sanitize(markedContent)
+    return DOMPurify.sanitize(sanitizedContent)
+}
+
+
+
+
+
+
+  </script>
+  
+  
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://www.codingforentrepreneurs.com/blog/python-jwt-client-django-rest-framework-simplejwt/"
+        },
+        "headline": "A Python JWT Client for Django Rest Framework simplejwt",
+        "image": [
+          "https://static.codingforentrepreneurs.com/media/cfe-blog/python-jwt-client-django-rest-framework-simplejwt/Django_Rest_Framework_JWT_Blog_Post.jpg",
+        ],
+        "datePublished": "2022-02-21T12:11:58-06:00",
+        "dateModified": "2022-02-23T10:37:22.686450-06:00",
+        "author": {
+          "@type": "Person",
+          "name": "Justin Mitchel",
+          "url": "https://www.codingforentrepreneurs.com/u/jmitchel3"
+        }
+      }
+
+</script>
+
+
+  
+
+<iframe name="oauth2relay1975469959" id="oauth2relay1975469959" src="./demo_files/postmessageRelay.html" tabindex="-1" aria-hidden="true" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe><iframe frameborder="0" scrolling="no" style="background-color: transparent; border: 0px; display: none;" src="./demo_files/saved_resource.html"></iframe><div id="GOOGLE_INPUT_CHEXT_FLAG" input="" input_stat="{&quot;tlang&quot;:true,&quot;tsbc&quot;:true,&quot;pun&quot;:true,&quot;mk&quot;:true,&quot;ss&quot;:true}" style="display: none;"></div><div style="display: block; visibility: hidden; position: absolute; width: 106px; left: -10000px; top: -10000px;"><table cellpadding="0" cellspacing="0" dir="ltr" style="width:106px;" frame="void" rules="none" class=" gc-bubbleDefault pls-container"><tbody><tr class="gc-reset"><td class="pls-topLeft gc-reset"><img class="gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/border_3.gif"></td><td class="pls-topTail gc-reset"><img class="pls-tailbottom gc-reset" style="width:15px !important; height:9px !important; max-width: 15px !important; max-height: 9px !important;" src="./demo_files/spacer.gif"><img class="pls-spacerbottom gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/spacer.gif"></td><td class="pls-topRight gc-reset"><img class="gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/border_3.gif"></td></tr><tr class="gc-reset"><td class="pls-vertShimLeft gc-reset"><img class="gc-reset" style="width:1px !important; height:4px !important; max-width: 1px !important; max-height: 4px !important;" src="./demo_files/spacer.gif"></td><td class="pls-vertShim gc-reset"><img class="gc-reset" style="width:1px !important; height:4px !important; max-width: 1px !important; max-height: 4px !important;" src="./demo_files/spacer.gif"></td><td class="pls-vertShimRight gc-reset"><img class="pls-dropTR gc-reset" style="width:5px !important; height:4px !important; max-width: 5px !important; max-height: 4px !important;" src="./demo_files/spacer.gif"></td></tr><tr class="gc-reset"><td class="pls-contentLeft gc-reset"><img class="pls-tailright gc-reset" style="width:9px !important; height:15px !important; max-width: 9px !important; max-height: 15px !important;" src="./demo_files/spacer.gif"><img class="pls-spacerright gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/spacer.gif"></td><td class="pls-contentWrap gc-reset"><div class="goog-bubble-content gc-reset"><iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="margin:0px;position:absolute;z-index:1;border-style:none;outline:none;width:100px;" tabindex="0" vspace="0" width="100%" id="I0_1659377673218" name="I0_1659377673218" src="./demo_files/subscribe_embed(1).html"></iframe></div></td><td class="pls-dropRight gc-reset"><img class="pls-tailleft gc-reset" style="width:12px !important; height:19px !important; max-width: 12px !important; max-height: 19px !important;" src="./demo_files/spacer.gif"><img class="pls-spacerleft gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/spacer.gif"></td></tr><tr class="gc-reset"><td class="pls-bottomLeft gc-reset"><img class="gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/border_3.gif"></td><td class="gc-reset"><table cellpadding="0" cellspacing="0" style="width:100%" class="gc-reset"><tbody><tr class="gc-reset"><td class="pls-vert gc-reset"><img class="pls-dropBL gc-reset" style="width:4px !important; height:5px !important; max-width: 4px !important; max-height: 5px !important;" src="./demo_files/spacer.gif"></td><td class="pls-dropBottom gc-reset"><img class="pls-tailtop gc-reset" style="width:19px !important; height:13px !important; max-width: 19px !important; max-height: 13px !important;" src="./demo_files/spacer.gif"><img class="pls-spacertop gc-reset" style="width:1px !important; height:1px !important; max-width: 1px !important; max-height: 1px !important;" src="./demo_files/spacer.gif"></td></tr></tbody></table></td><td class="pls-vert gc-reset"><img class="pls-dropBR gc-reset" style="width:5px !important; height:5px !important; max-width: 5px !important; max-height: 5px !important;" src="./demo_files/spacer.gif"></td></tr></tbody></table></div></body></html>

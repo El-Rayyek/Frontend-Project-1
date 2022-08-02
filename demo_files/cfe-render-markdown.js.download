@@ -1,0 +1,116 @@
+function getCopyBtn() {
+  let copyCodeBtn = document.createElement("button")
+  copyCodeBtn.innerHTML = "Copy"
+  copyCodeBtn.classList = ["btn btn-outline-primary btn-sm rounded-0 copy-btn"]
+  return copyCodeBtn
+}
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    let successful;
+    try {
+      successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      // console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+      // console.error('Fallback: Oops, unable to copy', err);
+      successful=false
+    }
+
+    document.body.removeChild(textArea);
+    return successful
+}
+function copyTextToClipboard(text) {
+let successful;
+if (!navigator.clipboard) {
+  successful = fallbackCopyTextToClipboard(text);
+  return successful;
+}
+navigator.clipboard.writeText(text).then(function() {
+  // console.log('Async: Copying to clipboard was successful!');
+  successful = true
+}, function(err) {
+  // console.error('Async: Could not copy text: ', err);
+  successful = false
+});
+return successful
+}
+
+
+
+function chatBoxScrollBottom() {
+  let chatEl = document.getElementById('chat'); 
+  if (chatEl) {
+      const xH = chatEl.scrollHeight
+      chatEl.scrollTo(0, xH);
+  }
+}
+
+
+function cfeRenderMarkdown() {
+  const markdownElements = document.getElementsByClassName('cfe-markdown')
+  if (markdownElements.length > 0) {
+    var converter = new showdown.Converter()
+    for (let markdownEl of markdownElements) {
+      let markdown = markdownEl.innerHTML
+      if (![...markdownEl.classList].includes("cfe-markdown-render")) {
+    
+        try {
+          markdown = JSON.parse(markdown)
+        } catch (error) {
+          
+        }
+  
+        let markedContent = converter.makeHtml(markdown);
+        let sanitizedContent = DOMPurify.sanitize(markedContent)
+        markdownEl.innerHTML = DOMPurify.sanitize(sanitizedContent)
+        markdownEl.classList.add('cfe-markdown-render')
+        markdownEl.classList.remove('cfe-markdown')
+        markdownEl.classList.remove('d-none')
+      }
+    }
+    Prism.highlightAll();
+  
+    let codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach(el=>{
+      let preEl = el.parentElement
+      let divEl = preEl.parentElement
+      let blockCopyBtn = getCopyBtn()
+      blockCopyBtn.onclick = (e) => {
+        e.preventDefault()
+        let copied = copyTextToClipboard(el.innerText)
+        if (copied) {
+          blockCopyBtn.classList.add('btn-success')
+          blockCopyBtn.classList.remove('btn-outline-primary')
+          blockCopyBtn.innerText = 'Copied'
+          setTimeout(()=>{
+            blockCopyBtn.classList.remove('btn-success')
+            blockCopyBtn.classList.add('btn-outline-primary')
+            blockCopyBtn.innerHTML = 'Copy'
+          }, 1500)
+        } else {
+          blockCopyBtn.classList.add('btn-danger')
+          blockCopyBtn.classList.remove('btn-outline-primary')
+          blockCopyBtn.innerText = 'Failed'
+          setTimeout(()=>{
+            blockCopyBtn.classList.remove('btn-danger')
+            blockCopyBtn.classList.add('btn-outline-primary')
+            blockCopyBtn.innerHTML = 'Copy'
+          }, 1500)
+        }
+      }
+      divEl.insertBefore(blockCopyBtn, preEl)
+    })
+  }
+  chatBoxScrollBottom()
+}
